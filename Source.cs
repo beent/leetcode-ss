@@ -8,6 +8,116 @@ namespace Leetcode
     public class Source
     {
         /// <summary>
+        /// 376. 摆动序列
+        /// </summary>
+        /// <param name="nums"></param>
+        /// <returns></returns>
+        public int WiggleMaxLength(int[] nums)
+        {
+            int n = nums.Length;
+            if (n < 2) return n;
+            int up = 1, down = 1;
+            for (int i = 1; i < n; i++)
+            {
+                if (nums[i] > nums[i - 1])
+                {
+                    up = down + 1;
+                }
+                if (nums[i] < nums[i - 1])
+                {
+                    down = up + 1;
+                }
+            }
+            return Math.Max(up, down);
+        }
+
+
+        /// <summary>
+        /// 649. Dota2 参议院
+        /// </summary>
+        /// <param name="senate"></param>
+        /// <returns></returns>
+        public string PredictPartyVictory(string senate)
+        {
+            int n = senate.Length;
+            var radiant = new Queue<int>();
+            var dire = new Queue<int>();
+            for (int i = 0; i < n; i++)
+            {
+                if (senate[i] == 'R')
+                {
+                    radiant.Enqueue(i);
+                }
+                else
+                {
+                    dire.Enqueue(i);
+                }
+            }
+            while (radiant.Any() && dire.Any())
+            {
+                int rIndex = radiant.Peek(), dIndex = dire.Peek();
+                if (rIndex < dIndex)
+                {
+                    radiant.Dequeue();
+                }
+            }
+            return "";
+
+            // 循环统计
+            // int Rnumber = 0;//R阵营总人数
+            // int Dnumber = 0;//D阵营总人数
+            // int curBanR = 0;//当前被ban
+            // int curBanD = 0;//当前被ban
+            // int totalBanR = 0;//被ban总数
+            // int totalBanD = 0;//被ban总数
+            // char[] chars = senate.ToCharArray();
+            // bool flag = true;
+            // while (true)
+            // {
+            //     for (int i = 0; i < chars.Length; i++)
+            //     {
+            //         char cur = chars[i];
+            //         if (cur == 'R')
+            //         {
+            //             if (flag)
+            //                 Rnumber++;
+            //             if (curBanR == 0)
+            //             {
+            //                 curBanD++;
+            //                 totalBanD++;
+            //                 if (totalBanD == Dnumber && !flag) return "Radiant";
+            //             }
+            //             else
+            //             {
+            //                 curBanR--;
+            //                 chars[i] = 'r';
+            //             }
+            //         }
+            //         else if (cur == 'D')
+            //         {
+            //             if (flag)
+            //                 Dnumber++;
+            //             if (curBanD == 0)
+            //             {
+            //                 curBanR++;
+            //                 totalBanR++;
+            //                 if (totalBanR == Rnumber && !flag) return "Dire";
+            //             }
+            //             else
+            //             {
+            //                 curBanD--;
+            //                 chars[i] = 'd';
+            //             }
+            //         }
+            //     }
+            //     flag = false;
+            //     if (totalBanD >= Dnumber) return "Radiant";
+            //     if (totalBanR >= Rnumber) return "Dire";
+            // }
+        }
+
+
+        /// <summary>
         /// 62. 不同路径
         /// </summary>
         /// <param name="m"></param>
