@@ -8,6 +8,91 @@ namespace Leetcode
     public class Source
     {
         /// <summary>
+        /// 5245. 堆叠长方体的最大高度
+        /// </summary>
+        /// <param name="cuboids"></param>
+        /// <returns></returns>
+        public int MaxHeight(int[][] cuboids)
+        {
+
+            return 0;
+        }
+
+
+        /// <summary>
+        /// 5627. 石子游戏 VII
+        /// </summary>
+        /// <param name="stones"></param>
+        /// <returns></returns>
+        public int StoneGameVII(int[] stones)
+        {
+            int n = stones.Length;
+            int[] pre = new int[n + 1];
+            for (int i = 0; i < n; i++) pre[i + 1] = pre[i] + stones[i];
+            int[,] dp = new int[n, n];
+            for (int i = n - 1; i >= 0; i--)
+            {
+                for (int j = i; j < n; j++)
+                {
+                    if (i == j)
+                    {
+                        dp[i, j] = 0;
+                        continue;
+                    }
+                    int L = (pre[j + 1] - pre[i + 1]) - dp[i + 1, j];
+                    int R = (pre[j] - pre[i]) - dp[i, j - 1];
+                    dp[i, j] = Math.Max(L, R);
+                }
+            }
+            return dp[0, n - 1];
+        }
+
+
+        /// <summary>
+        /// 5626. 十-二进制数的最少数目
+        /// </summary>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public int MinPartitions(string n)
+        {
+            int max = 0;
+            for (int i = 0; i < n.Length; i++)
+            {
+                max = Math.Max(max, n[i] - '0');
+            }
+            return max;
+        }
+
+
+        /// <summary>
+        /// 5625. 比赛中的配对次数
+        /// </summary>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public int NumberOfMatches(int n)
+        {
+            int count = 0;
+            int curN = 0;
+            while (curN != 1)
+            {
+                if (n % 2 == 1)
+                {
+                    count += (n - 1) / 2;
+                    curN = (n - 1) / 2 + 1;
+                }
+                else
+                {
+                    count += n / 2;
+                    curN = n / 2;
+                }
+                n = curN;
+            }
+            return count;
+        }
+
+
+
+        /// <summary>
         /// 376. 摆动序列
         /// </summary>
         /// <param name="nums"></param>
