@@ -8,6 +8,30 @@ namespace Leetcode
     public class Source
     {
         /// <summary>
+        /// 217. 存在重复元素
+        /// </summary>
+        /// <param name="nums"></param>
+        /// <returns></returns>
+        public bool ContainsDuplicate(int[] nums)
+        {
+            HashSet<int> set = new HashSet<int>();
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (set.Contains(nums[i]))
+                {
+                    return true;
+                }
+                else
+                {
+                    set.Add(nums[i]);
+                }
+            }
+            return false;
+        }
+
+
+
+        /// <summary>
         /// 5245. 堆叠长方体的最大高度
         /// </summary>
         /// <param name="cuboids"></param>
