@@ -8,6 +8,271 @@ namespace Leetcode
     public class Source
     {
         /// <summary>
+        /// 123. 买卖股票的最佳时机 III
+        /// </summary>
+        /// <param name="prices"></param>
+        /// <returns></returns>
+        public int MaxProfitIII(int[] prices)
+        {
+
+        }
+
+
+        /// <summary>
+        /// 122. 买卖股票的最佳时机 II
+        /// </summary>
+        /// <param name="prices"></param>
+        /// <returns></returns>
+        public int MaxProfitII(int[] prices)
+        {
+            int len = prices.Length;
+            if (len == 0) return 0;
+            int[,] dp = new int[len, 2];
+            dp[0, 0] = 0;
+            dp[0, 1] = -prices[0];
+            for (int i = 1; i < len; i++)
+            {
+                dp[i, 0] = Math.Max(dp[i - 1, 0], dp[i - 1, 1] + prices[i]);
+                dp[i, 1] = Math.Max(dp[i - 1, 0] - prices[i], dp[i - 1, 1]);
+            }
+            return dp[len - 1, 0];
+        }
+
+
+        /// <summary>
+        /// 121. 买卖股票的最佳时机
+        /// </summary>
+        /// <param name="prices"></param>
+        /// <returns></returns>
+        public int MaxProfit(int[] prices)
+        {
+            int n = prices.Length;
+            if (n <= 1) return 0;
+            int min = prices[0], max = 0;
+            for (int i = 1; i < n; i++)
+            {
+                max = Math.Max(max, prices[i] - min);
+                min = Math.Min(min, prices[i]);
+            }
+            return max;
+        }
+
+        /// <summary>
+        /// 714. 买卖股票的最佳时机含手续费
+        /// </summary>
+        /// <param name="prices"></param>
+        /// <param name="fee"></param>
+        /// <returns></returns>
+        public int MaxProfit(int[] prices, int fee)
+        {
+            int n = prices.Length;
+            int[,] dp = new int[n, 2];
+            dp[0, 0] = 0;
+            dp[0, 1] = -prices[0];
+            for (int i = 1; i < n; i++)
+            {
+                dp[i, 0] = Math.Max(dp[i - 1, 0], dp[i - 1, 1] + prices[i] - fee);
+                dp[i, 1] = Math.Max(dp[i - 1, 1], dp[i - 1, 0] - prices[i]);
+            }
+            return dp[n - 1, 0];
+        }
+
+
+        /// <summary>
+        /// 290. 单词规律
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public bool WordPattern(string pattern, string s)
+        {
+            var dict = new Dictionary<char, string>();
+            var arr = s.Split(' ');
+            if (arr.Length != pattern.Length) return false;
+            for (int i = 0; i < pattern.Length; i++)
+            {
+                if (dict.ContainsKey(pattern[i]))
+                {
+                    if (dict[pattern[i]] == arr[i])
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (dict.ContainsValue(arr[i]))
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        dict.Add(pattern[i], arr[i]);
+                    }
+                }
+            }
+            return true;
+        }
+
+
+        /// <summary>
+        /// 738. 单调递增的数字
+        /// </summary>
+        /// <param name="N"></param>
+        /// <returns></returns>
+        public int MonotoneIncreasingDigits(int N)
+        {
+            var arr = N.ToString().ToCharArray();
+            var len = arr.Length;
+            int flag = len;
+            for (int i = len - 1; i >= 1; i--)
+            {
+                if (arr[i] < arr[i - 1])
+                {
+                    flag = i;
+                    arr[i - 1]--;
+                }
+            }
+            for (int i = flag; i < len; i++)
+            {
+                arr[i] = '9';
+            }
+            return Convert.ToInt32(new string(arr));
+
+
+            // int res = N;
+            // int i = 1;
+            // while (i <= res / 10)
+            // {
+            //     int n = res / i % 100;
+            //     i *= 10;
+            //     if (n / 10 > n % 10)
+            //     {
+            //         res = res / i * i - 1;
+            //     }
+            // }
+            // return res;
+        }
+
+
+        public int LongestValidParentheses(string s)
+        {
+            return 0;
+        }
+
+
+
+        /// <summary>
+        /// 面试题 16.26. 计算器
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public int Calculate(string s)
+        {
+            return 0;
+        }
+
+
+
+        /// <summary>
+        /// 47. 全排列 II
+        /// </summary>
+        /// <param name="nums"></param>
+        /// <returns></returns>
+        public IList<IList<int>> PermuteUnique(int[] nums)
+        {
+            var ans = new List<IList<int>>();
+            var perm = new List<int>();
+            var vis = new bool[nums.Length];
+            Array.Sort(nums);
+            Backtrack(nums, ans, 0, perm);
+            return ans;
+
+            void Backtrack(int[] nums, List<IList<int>> ans, int idx, List<int> perm)
+            {
+                if (idx == nums.Length)
+                {
+                    ans.Add(new List<int>(perm));
+                    return;
+                }
+                for (int i = 0; i < nums.Length; i++)
+                {
+                    if (vis[i] || (i > 0 && nums[i] == nums[i - 1] && !vis[i - 1]))
+                    {
+                        continue;
+                    }
+                    perm.Add(nums[i]);
+                    vis[i] = true;
+                    Backtrack(nums, ans, idx + 1, perm);
+                    vis[i] = false;
+                    perm.RemoveAt(idx);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 46. 全排列
+        /// </summary>
+        /// <param name="nums"></param>
+        /// <returns></returns>
+        public IList<IList<int>> Permute(int[] nums)
+        {
+            IList<IList<int>> res = new List<IList<int>>();
+            IList<int> path = new List<int>();
+            DFS(path, nums);
+            return res;
+
+            void DFS(IList<int> path, int[] nums)
+            {
+                if (path.Count == nums.Length)
+                {
+                    res.Add(new List<int>(path));
+                    return;
+                }
+                foreach (var num in nums)
+                {
+                    if (path.Contains(num))
+                        continue;
+                    path.Add(num);
+                    DFS(path, nums);
+                    path.Remove(num);
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// 49. 字母异位词分组
+        /// </summary>
+        /// <param name="strs"></param>
+        /// <returns></returns>
+        public IList<IList<string>> GroupAnagrams(string[] strs)
+        {
+            var dict = new Dictionary<string, IList<string>>();
+            for (int i = 0; i < strs.Length; i++)
+            {
+                var tmp = strs[i].ToCharArray();
+                Array.Sort(tmp);
+                var key = new string(tmp);
+                if (dict.ContainsKey(key))
+                {
+                    dict[key].Add(strs[i]);
+                }
+                else
+                {
+                    dict.Add(key, new List<string>() { strs[i] });
+                }
+            }
+            return new List<IList<string>>(dict.Values);
+        }
+
+
+        /// <summary>
         /// 217. 存在重复元素
         /// </summary>
         /// <param name="nums"></param>
@@ -38,8 +303,33 @@ namespace Leetcode
         /// <returns></returns>
         public int MaxHeight(int[][] cuboids)
         {
+            for (int i = 0; i < cuboids.Length; i++)
+            {
+                Array.Sort(cuboids[i]);
+            }
+            Array.Sort(cuboids, (c1, c2) =>
+            {
+                if (c1[0] != c2[0]) return c1[0].CompareTo(c2[0]);
+                else if (c1[1] != c2[1]) return c1[1].CompareTo(c2[1]);
+                else return c1[2].CompareTo(c2[2]);
+            });
+            int[] dp = new int[cuboids.Length];
+            int maxHeight = 0;
 
-            return 0;
+            for (int i = 0; i < cuboids.Length; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    if (cuboids[j][1] <= cuboids[i][1] && cuboids[j][2] <= cuboids[i][2])
+                    {
+                        dp[i] = Math.Max(dp[i], dp[j]);
+                    }
+                }
+                dp[i] += cuboids[i][2];
+                maxHeight = Math.Max(maxHeight, dp[i]);
+            }
+
+            return maxHeight;
         }
 
 

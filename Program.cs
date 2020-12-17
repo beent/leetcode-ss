@@ -7,9 +7,10 @@ namespace Leetcode
         static void Main(string[] args)
         {
             Source source = new Source();
-            int[] nums = new int[] { 0, 1, 2, 4, 5, 6, 8, 10, 12 };
+            int[] nums = new int[] { 1, 2, 3, 4 };
             int target = 3;
-            string s = "a good   example";
+            int N = 10;
+            string s = "32";
             char[][] board = new char[][] { new char[]{'5', '3', '.', '.', '7', '.', '.', '.', '.'},
                                             new char[]{'6', '.', '.', '1', '9', '5', '.', '.', '.'},
                                             new char[]{'.', '9', '8', '.', '.', '.', '.', '6', '.'},
@@ -20,10 +21,13 @@ namespace Leetcode
                                             new char[]{'.', '.', '.', '4', '1', '9', '.', '.', '5'},
                                             new char[]{'.', '.', '.', '.', '8', '.', '.', '7', '9'}
                                             };
+            string[] strs = new string[] { "eat", "tea", "tan", "ate", "nat", "bat" };
+
+            int[][] cuboids = new int[][] { new int[] { 50, 45, 20 }, new int[] { 95, 37, 53 }, new int[] { 45, 23, 12 } };
 
             int[][] grid = new int[][] { new int[] { 1, 0 }, new int[] { 1, 1 } };
             // source.Rotate(nums, target);
-            var result = source.CountServers(grid);
+            var result = source.MonotoneIncreasingDigits(N);
             Console.WriteLine($"Result: {result}");
             // NumArray arr = new NumArray(nums);
 
