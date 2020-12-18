@@ -8,13 +8,45 @@ namespace Leetcode
     public class Source
     {
         /// <summary>
+        /// 389. 找不同
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public char FindTheDifference(string s, string t)
+        {
+            int res = 0;
+            foreach (char c in t)
+            {
+                res += c;
+            }
+            foreach (char c in s)
+            {
+                res -= c;
+            }
+            return (char)res;
+            // 自己的做法
+            // var sArr = s.ToCharArray();
+            // var tArr = t.ToCharArray();
+            // Array.Sort(sArr);
+            // Array.Sort(tArr);
+            // for(int i = 0; i < tArr.Length; i++){
+            //     if(i == sArr.Length) return tArr[i];
+            //     if(sArr[i] != tArr[i]) return tArr[i];
+            // }
+            // return ' ';
+        }
+
+
+
+        /// <summary>
         /// 123. 买卖股票的最佳时机 III
         /// </summary>
         /// <param name="prices"></param>
         /// <returns></returns>
         public int MaxProfitIII(int[] prices)
         {
-
+            return 0;
         }
 
 
