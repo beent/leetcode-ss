@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 namespace Leetcode
 {
-    /*
-    // Definition for a Node.   
-    */
+    /// <summary>
+    /// Definition for a Node. 
+    /// </summary>
     public class Node
     {
         public int val;
@@ -24,9 +24,9 @@ namespace Leetcode
         }
     }
 
-    /**
-     * Definition for a binary tree node.
-     */
+    /// <summary>
+    /// Definition for a binary tree node.
+    /// </summary>
     public class TreeNode
     {
         public int val;

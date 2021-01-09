@@ -1,12 +1,1033 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Leetcode
 {
     public class Source
     {
+        /// <summary>
+        /// 39. 组合总和
+        /// Medium
+        /// </summary>
+        /// <param name="candidates"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public IList<IList<int>> CombinationSum(int[] candidates, int target)
+        {
+            Array.Sort(candidates);
+            List<IList<int>> res = new List<IList<int>>();
+            int len = candidates.Length;
+            List<int> combine = new List<int>();
+            DFS(candidates, target, res, combine, 0);
+            return res;
+
+            void DFS(int[] candidates, int target, IList<IList<int>> res, IList<int> combine, int idx)
+            {
+                if (idx == candidates.Length) return;
+                if (target == 0)
+                {
+                    res.Add(new List<int>(combine));
+                    return;
+                }
+                DFS(candidates, target, res, combine, idx + 1);
+                if (target - candidates[idx] >= 0)
+                {
+                    combine.Add(candidates[idx]);
+                    DFS(candidates, target - candidates[idx], res, combine, idx);
+                    combine.RemoveAt(combine.Count - 1);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 6. Z 字形变换
+        /// Medium
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="numRows"></param>
+        /// <returns></returns>
+        public string Convert_Z(string s, int numRows)
+        {
+            if (numRows == 1) return s;
+            List<StringBuilder> rows = new List<StringBuilder>();
+            for (int i = 0; i < Math.Min(numRows, s.Length); i++)
+            {
+                rows.Add(new StringBuilder());
+            }
+            int curRow = 0;
+            bool goingDown = false;
+            for (int i = 0; i < s.Length; i++)
+            {
+                rows[curRow].Append(s[i]);
+                if (curRow == 0 || curRow == numRows - 1) goingDown = !goingDown;
+                curRow += goingDown ? 1 : -1;
+            }
+            StringBuilder res = new StringBuilder();
+            foreach (var item in rows)
+            {
+                res.Append(item);
+            }
+            return res.ToString();
+        }
+
+        /// <summary>
+        /// 258. 各位相加
+        /// Easy
+        /// </summary>
+        /// <param name="num"></param>
+        /// <returns></returns>
+        public int AddDigits(int num)
+        {
+            // X = 100 * a + 10 * b + c = 99 * a + 9 * b + (a + b + c);
+            return (num - 1) % 9 + 1;
+            // 递归
+            // if (num < 10) return num;
+            // string numStr = num.ToString();
+            // int sum = 0;
+            // for (int i = 0; i < numStr.Length; i++)
+            // {
+            //     sum += numStr[i] - '0';
+            // }
+            // return AddDigits(sum);
+        }
+
+
+        /// <summary>
+        /// 237. 删除链表中的节点
+        /// Easy
+        /// </summary>
+        /// <param name="node"></param>
+        public void DeleteNode(ListNode node)
+        {
+            /*
+            *  比如 [4, 5, 1, 9] 输入 5
+            *  把 5 这里的值设为他下一个的值 1          [4, 1, 1, 9]
+            *  然后直接指向 9, 就跳过了原来的 1, 结束   [4, 1, 9]
+            */
+            node.val = node.next.val;
+            node.next = node.next.next;
+        }
+
+
+        /// <summary>
+        /// 392. 判断子序列
+        /// Easy
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public bool IsSubsequence(string s, string t)
+        {
+            // 双指针
+            int i = 0, j = 0;
+            while (i < s.Length && j < t.Length)
+            {
+                if (s[i] == t[j])
+                {
+                    i++;
+                    j++;
+                }
+                else
+                {
+                    j++;
+                }
+            }
+            return i == s.Length;
+
+            // 使用栈记录
+            // bool res = true;
+            // Stack<char> stack = new Stack<char>();
+            // for (int i = t.Length - 1; i >= 0; i--)
+            // {
+            //     stack.Push(t[i]);
+            // }
+            // for (int i = 0; i < s.Length;)
+            // {
+            //     if (stack.Count == 0) { return false; }
+            //     if (stack.Peek() == s[i])
+            //     {
+            //         stack.Pop();
+            //         i++;
+            //     }
+            //     else
+            //     {
+            //         stack.Pop();
+            //     }
+            // }
+            // return res;
+        }
+
+        /// <summary>
+        /// 374. 猜数字大小
+        /// Easy
+        /// </summary>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        int GuessNumberTarget = 0;
+        public int GuessNumber(int n)
+        {
+            int ans = -1;
+            int low = 1, high = n;
+            while (low <= high)
+            {
+                int mid = low + (high - low) / 2;
+                int res = guess(mid);
+                if (res == 0) return mid;
+                else if (res < 0) high = mid - 1;
+                else low = mid + 1;
+            }
+            return ans;
+
+            int guess(int n)
+            {
+                if (n > GuessNumberTarget) return -1;
+                if (n < GuessNumberTarget) return 1;
+                return 0;
+            }
+        }
+
+
+        /// <summary>
+        /// 383. 赎金信
+        /// Easy
+        /// </summary>
+        /// <param name="ransomNote"></param>
+        /// <param name="magazine"></param>
+        /// <returns></returns>
+        public bool CanConstruct(string ransomNote, string magazine)
+        {
+            var dict = magazine.GroupBy(x => x)
+                            .ToDictionary(x => x.Key, x => x.Count());
+            for (int i = 0; i < ransomNote.Length; i++)
+            {
+                if (dict.ContainsKey(ransomNote[i]))
+                {
+                    dict[ransomNote[i]]--;
+                    if (dict[ransomNote[i]] == 0) dict.Remove(ransomNote[i]);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        /// <summary>
+        /// 190. 颠倒二进制位
+        /// Easy
+        /// </summary>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public uint reverseBits(uint n)
+        {
+            uint res = 0;
+            for (int i = 0; i < 32; i++)
+            {
+                uint bit = n & 1;
+                n = n >> 1;
+                res = (res << 1) ^ bit;
+            }
+            return res;
+        }
+
+        /// <summary>
+        /// 160. 相交链表
+        /// Easy
+        /// </summary>
+        /// <param name="headA"></param>
+        /// <param name="headB"></param>
+        /// <returns></returns>
+        public ListNode GetIntersectionNode(ListNode headA, ListNode headB)
+        {
+            /*
+                union 为如果存在的相同的部分
+                A = a + union
+                B = b + union
+                
+                A + B = B + A
+                A(a + union) + b = B(b + union) + a
+            */
+            if (headA == null || headB == null) return null;
+            ListNode a = headA, b = headB;
+            while (a != b)
+            {
+                a = a == null ? headB : a.next;
+                b = b == null ? headA : b.next;
+            }
+            return a;
+        }
+
+
+
+        /// <summary>
+        /// 547. 省份数量
+        /// Medium
+        /// </summary>
+        /// <param name="isConnected"></param>
+        /// <returns></returns>
+        public int FindCircleNum(int[][] isConnected)
+        {
+            int n = isConnected.Length;
+            UnionFind uf = new UnionFind(n);
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = i + 1; j < n; j++)
+                {
+                    if (isConnected[i][j] == 1)
+                    {
+                        uf.Union(i, j);
+                    }
+                }
+            }
+            return uf.size;
+            // int res = 0;
+            // int len = isConnected.Length;
+            // bool[] visited = new bool[len];
+            // for (int i = 0; i < len; i++)
+            // {
+            //     if (!visited[i])
+            //     {
+            //         DFS(isConnected, visited, len, i);
+            //         res++;
+            //     }
+            // }
+            // return res;
+
+            // void DFS(int[][] isConnected, bool[] visited, int len, int i)
+            // {
+            //     for (int j = 0; j < len; j++)
+            //     {
+            //         if (isConnected[i][j] == 1 && !visited[j])
+            //         {
+            //             visited[j] = true;
+            //             DFS(isConnected, visited, len, j);
+            //         }
+            //     }
+            // }
+        }
+
+
+
+        /// <summary>
+        /// 990. 等式方程的可满足性
+        /// Medium
+        /// </summary>
+        /// <param name="equations"></param>
+        /// <returns></returns>
+        public bool EquationsPossible(string[] equations)
+        {
+            // 并查集
+            int[] parents = new int[26];
+            for (int i = 0; i < 26; i++)
+            {
+                parents[i] = i;
+            }
+            foreach (var item in equations)
+            {
+                if (item[1] == '=')
+                {
+                    int idx1 = item[0] - 'a';
+                    int idx2 = item[3] - 'a';
+                    Union(parents, idx1, idx2);
+                }
+            }
+            foreach (var item in equations)
+            {
+                if (item[1] == '!')
+                {
+                    int idx1 = item[0] - 'a';
+                    int idx2 = item[3] - 'a';
+                    if (Find(parents, idx1) == Find(parents, idx2))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+
+            int Find(int[] parents, int idx)
+            {
+                while (parents[idx] != idx)
+                {
+                    parents[idx] = parents[parents[idx]];
+                    idx = parents[idx];
+                }
+                return idx;
+            }
+
+            void Union(int[] parents, int idx1, int idx2)
+            {
+                parents[Find(parents, idx1)] = Find(parents, idx2);
+            }
+        }
+
+
+        /// <summary>
+        /// 399. 除法求值
+        /// Medium
+        /// </summary>
+        /// <param name="equations"></param>
+        /// <param name="values"></param>
+        /// <param name="queries"></param>
+        /// <returns></returns>
+        public double[] CalcEquation(IList<IList<string>> equations, double[] values, IList<IList<string>> queries)
+        {
+            double[] res = new double[queries.Count];
+            Dictionary<string, double> dict = new Dictionary<string, double>();
+            HashSet<string> set = new HashSet<string>();
+            // 根据 equations 和 values 构建初始字典. 由 a / b = 2 可知 b / a = 1 / 2 顺带一起加进去
+            // 加逗号是为了应对给的例子是 ["a", "aa"] 这种情况，用于区分 "a, aa" 和 "aa, a"
+            for (int i = 0; i < values.Length; i++)
+            {
+                dict[equations[i][0] + ", " + equations[i][1]] = values[i];
+                dict[equations[i][1] + ", " + equations[i][0]] = 1 / values[i];
+                set.Add(equations[i][0]);
+                set.Add(equations[i][1]);
+            }
+            // Floyd算法, 简单来说就是根据 a / b = 2, b / c = 3 来求 a / c = 6 的过程
+            foreach (var k in set)
+            {
+                foreach (var i in set)
+                {
+                    foreach (var j in set)
+                    {
+                        if (dict.ContainsKey(i + ", " + k) && dict.ContainsKey(k + ", " + j))
+                        {
+                            dict[i + ", " + j] = dict[i + ", " + k] * dict[k + ", " + j];
+                        }
+                    }
+                }
+            }
+            // 在字典中查找要求的结果
+            for (int i = 0; i < queries.Count; i++)
+            {
+                res[i] = dict.ContainsKey(queries[i][0] + ", " + queries[i][1])
+                    ? dict[queries[i][0] + ", " + queries[i][1]]
+                    : -1;
+            }
+            return res;
+        }
+
+
+        /// <summary>
+        /// 830. 较大分组的位置
+        /// Easy
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public IList<IList<int>> LargeGroupPositions(string s)
+        {
+            List<IList<int>> res = new List<IList<int>>();
+            int l = 0, r = 0, len = s.Length;
+            while (r < len)
+            {
+                while (r < len && s[l] == s[r])
+                {
+                    r++;
+                }
+                if (r - l > 2)
+                {
+                    res.Add(new List<int> { l, r - 1 });
+                }
+                l = r;
+            }
+            return res;
+        }
+
+
+        /// <summary>
+        /// 509. 斐波那契数
+        /// Easy
+        /// </summary>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public int Fib(int n)
+        {
+            if (n < 2) return n;
+            int[] f = new int[n + 1];
+            f[0] = 0;
+            f[1] = 1;
+            for (int i = 2; i <= n; i++)
+            {
+                f[i] = f[i - 1] + f[i - 2];
+            }
+            return f[n];
+        }
+
+
+
+        /// <summary>
+        /// 435. 无重叠区间
+        /// Medium
+        /// </summary>
+        /// <param name="intervals"></param>
+        /// <returns></returns>
+        public int EraseOverlapIntervals(int[][] intervals)
+        {
+            int res = 0;
+            if (intervals == null || intervals.Length == 0) return res;
+            Array.Sort(intervals, (m1, m2) => m1[0].CompareTo(m2[0]));
+            int end = intervals[0][1];
+            for (int i = 1; i < intervals.Length; i++)
+            {
+                if (end > intervals[i][0])
+                {
+                    end = Math.Min(end, intervals[i][1]);
+                    res++;
+                }
+                else
+                {
+                    end = intervals[i][1];
+                }
+            }
+            return res;
+        }
+
+
+        /// <summary>
+        /// 1046. 最后一块石头的重量
+        /// Easy
+        /// </summary>
+        /// <param name="stones"></param>
+        /// <returns></returns>
+        public int LastStoneWeight(int[] stones)
+        {
+            // 递归实现
+            if (stones.Length == 0) return 0;
+            if (stones.Length == 1) return stones[0];
+            if (stones.Length == 2) return Math.Abs(stones[1] - stones[0]);
+            Array.Sort(stones);
+            if (stones[stones.Length - 3] == 0)
+            {
+                return stones[stones.Length - 1] - stones[stones.Length - 2];
+            }
+            stones[stones.Length - 1] = stones[stones.Length - 1] - stones[stones.Length - 2];
+            stones[stones.Length - 2] = 0;
+            return LastStoneWeight(stones);
+        }
+
+
+        /// <summary>
+        /// 3. 无重复字符的最长子串
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public int LengthOfLongestSubstring(string s)
+        {
+            HashSet<char> set = new HashSet<char>();
+            int l = 0, r = 0;
+            int n = s.Length;
+            int count = 0, max = 0;
+            while (r < n)
+            {
+                if (!set.Contains(s[r]))
+                {
+                    set.Add(s[r]);
+                    r++;
+                    count++;
+                }
+                else
+                {
+                    set.Remove(s[l]);
+                    l++;
+                    count--;
+                }
+                max = Math.Max(max, count);
+            }
+            return max;
+        }
+
+
+        /// <summary>
+        /// 1705. 吃苹果的最大数目
+        /// </summary>
+        /// <param name="apples"></param>
+        /// <param name="days"></param>
+        /// <returns></returns>
+        public int EatenApples(int[] apples, int[] days)
+        {
+            if (apples.Length == 1) return Math.Min(apples[0], days[0]);
+            int n = apples.Length, endDay = 0, zeroDay = 0;
+            for (int i = 0; i < n; i++)
+            {
+                if (apples[i] != 0 && i + days[i] > endDay)
+                {
+                    endDay = i + days[i];
+                }
+                if (i >= endDay)
+                {
+                    zeroDay++;
+                }
+            }
+            return endDay - zeroDay;
+        }
+
+
+
+        /// <summary>
+        /// 1704. 判断字符串的两半是否相似
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public bool HalvesAreAlike(string s)
+        {
+            char[] arr = { 'a', 'e', 'i', 'o', 'u' };
+            int l = 0, r = 0;
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (i < s.Length / 2)
+                {
+                    if (arr.Contains(char.ToLower(s[i])))
+                    {
+                        l++;
+                    }
+                }
+                else
+                {
+                    if (arr.Contains(char.ToLower(s[i])))
+                    {
+                        r++;
+                    }
+                }
+            }
+            return l == r;
+        }
+
+
+        /// <summary>
+        /// 330. 按要求补齐数组
+        /// </summary>
+        /// <param name="nums"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public int MinPatches(int[] nums, int n)
+        {
+            long curr_range = 0;
+            int m = nums.Length;
+            int res = 0;
+            for (long i = 1, pos = 0; i <= n; i = curr_range + 1)
+            {
+                if (pos >= m || i < nums[pos])
+                {
+                    res++;
+                    curr_range += i;
+                }
+                else
+                {
+                    curr_range += nums[pos];
+                    pos++;
+                }
+            }
+            return res;
+        }
+
+
+        /// <summary>
+        /// 455. 分发饼干
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public int FindContentChildren(int[] g, int[] s)
+        {
+            int child = 0, cookie = 0;
+            Array.Sort(g);
+            Array.Sort(s);
+            while (child < g.Length && cookie < s.Length)
+            {
+                if (g[child] <= s[cookie])
+                {
+                    child++;
+                }
+                cookie++;
+            }
+            return child;
+        }
+
+
+        /// <summary>
+        /// 135. 分发糖果
+        /// </summary>
+        /// <param name="ratings"></param>
+        /// <returns></returns>
+        public int Candy(int[] ratings)
+        {
+            if (ratings == null || ratings.Length == 0) return 0;
+            int[] nums = new int[ratings.Length];
+            nums[0] = 1;
+            // 先正序遍历，如果后一位比前一位高分，就给比前一位多1的糖果，否则给1
+            for (int i = 1; i < ratings.Length; i++)
+            {
+                if (ratings[i] > ratings[i - 1])
+                {
+                    nums[i] = nums[i - 1] + 1;
+                }
+                else
+                {
+                    nums[i] = 1;
+                }
+            }
+            // 再倒叙遍历，如果前一位比后一位高分并且得到的糖果小于或等于后一位，就给前一位孩子比后一位孩子多一个糖果
+            for (int i = ratings.Length - 2; i >= 0; i--)
+            {
+                if (ratings[i] > ratings[i + 1] && nums[i] <= nums[i + 1])
+                {
+                    nums[i] = nums[i + 1] + 1;
+                }
+            }
+            return nums.Sum();
+        }
+
+
+        /// <summary>
+        /// 103. 二叉树的锯齿形层序遍历
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        public IList<IList<int>> ZigzagLevelOrder(TreeNode root)
+        {
+            var res = new List<IList<int>>();
+            if (root is null) return res;
+            var isRight = true;
+            var queue = new Queue<TreeNode>();
+            queue.Enqueue(root);
+            while (queue.Count > 0)
+            {
+                var count = queue.Count;
+                var level = new int[count];
+                while (count > 0)
+                {
+                    var node = queue.Dequeue();
+                    level[isRight ? (level.Length - count) : (count - 1)] = node.val;
+                    count--;
+                    if (node.left != null)
+                    {
+                        queue.Enqueue(node.left);
+                    }
+                    if (node.right != null)
+                    {
+                        queue.Enqueue(node.right);
+                    }
+                }
+                res.Add(level.ToList());
+                isRight = !isRight;
+            }
+            return res;
+        }
+
+
+        /// <summary>
+        /// 141. 环形链表
+        /// </summary>
+        /// <param name="head"></param>
+        /// <returns></returns>
+        public bool HasCycle(ListNode head)
+        {
+            ListNode slow = head;
+            ListNode fast = head;
+            while (fast != null && fast.next != null)
+            {
+                fast = fast.next.next;
+                slow = slow.next;
+                if (fast == slow) return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 70. 爬楼梯
+        /// </summary>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public int ClimbStairs(int n)
+        {
+            int p = 0, q = 0, r = 1;
+            for (int i = 1; i <= n; i++)
+            {
+                p = q;
+                q = r;
+                r = p + q;
+            }
+            return r;
+        }
+
+
+        /// <summary>
+        /// 746. 使用最小花费爬楼梯
+        /// </summary>
+        /// <param name="cost"></param>
+        /// <returns></returns>
+        public int MinCostClimbingStairs(int[] cost)
+        {
+            int l = cost.Length;
+            int[] dp = new int[l + 1];
+            for (int i = 2; i <= l; i++)
+            {
+                dp[i] = Math.Min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2]);
+            }
+            return dp[l];
+        }
+
+
+        /// <summary>
+        /// 205. 同构字符串
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public bool IsIsomorphic(string s, string t)
+        {
+            if (s.Length != t.Length) return false;
+            var dict = new Dictionary<char, char>();
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (dict.ContainsKey(s[i]))
+                {
+                    if (dict[s[i]] != t[i])
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (dict.ContainsValue(t[i]))
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        dict.Add(s[i], t[i]);
+                    }
+                }
+            }
+            return true;
+        }
+
+
+        public int MaximalRectangle(char[][] matrix)
+        {
+            if (matrix.Length == 0 || matrix[0].Length == 0)
+            {
+                return 0;
+            }
+            int[] height = new int[matrix[0].Length];//动态规划，确定每一个点的高，然后 逐层实现  柱状图中最大的矩形
+            int max = 0;
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                for (int j = 0; j < matrix[0].Length; j++)
+                {
+                    height[j] = matrix[i][j] == '1' ? (height[j] + 1) : 0;
+                }
+                int tempmax = LargestRectangleArea(height);//构造  柱状图中最大的矩形，逐层实现
+                max = Math.Max(max, tempmax);
+            }
+            return max;
+
+
+            int LargestRectangleArea(int[] heights)
+            {
+                int[] ta = new int[heights.Length];
+                int[] leftbound = new int[heights.Length];
+                int[] rightbound = new int[heights.Length];
+                int top = -1;
+                //单调栈--左
+                for (int i = 0; i < heights.Length; i++)
+                {
+                    while (top >= 0 && heights[i] <= heights[ta[top]])
+                    {
+                        ta[top] = 0;
+                        top--;
+                    }
+                    if (top == -1)
+                    {
+                        leftbound[i] = -1;
+                    }
+                    else
+                    {
+                        leftbound[i] = ta[top];
+                    }
+                    ta[++top] = i;
+                }
+                //单调栈--右
+                top = -1;
+                for (int i = heights.Length - 1; i >= 0; i--)
+                {
+                    while (top >= 0 && heights[i] <= heights[ta[top]])
+                    {
+                        ta[top] = 0;
+                        top--;
+                    }
+                    if (top == -1)
+                    {
+                        rightbound[i] = heights.Length;
+                    }
+                    else
+                    {
+                        rightbound[i] = ta[top];
+                    }
+                    ta[++top] = i;
+                }
+                int max = 0;
+                for (int i = 0; i < heights.Length; i++)
+                {
+                    max = Math.Max(max, heights[i] * (rightbound[i] - leftbound[i] - 1));
+                }
+                return max;
+            }
+        }
+
+
+
+
+
+
+
+        /// <summary>
+        ///  5631. 跳跃游戏 VI
+        /// </summary>
+        /// <param name="nums"></param>
+        /// <param name="k"></param>
+        /// <returns></returns>
+        public int MaxResult(int[] nums, int k)
+        {
+            int n = nums.Length;
+            int[] q = new int[n];
+            int[] f = new int[n];
+            int hd = 1, tl = 1;
+            f[0] = nums[0];
+            q[1] = 0;
+            for (int i = 1; i < n; i++)
+            {
+                while (hd <= tl && q[hd] < i - k) hd++;
+                f[i] = f[q[hd]] + nums[i];
+                while (hd <= tl && f[i] > f[q[tl]]) tl--;
+                q[++tl] = i;
+            }
+            return f[n - 1];
+        }
+
+
+
+
+        /// <summary>
+        /// 5630. 删除子数组的最大得分
+        /// </summary>
+        /// <param name="nums"></param>
+        /// <returns></returns>
+        public int MaximumUniqueSubarray(int[] nums)
+        {
+            HashSet<int> set = new HashSet<int>();
+            int max = 0;
+            int res = 0;
+            int l = 0;
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (!set.Contains(nums[i]))
+                {
+                    set.Add(nums[i]);
+                    max += nums[i];
+                }
+                else
+                {
+                    while (l < i && set.Contains(nums[i]))
+                    {
+                        set.Remove(nums[l]);
+                        max -= nums[l];
+                        l++;
+                    }
+                    max += nums[i];
+                    set.Add(nums[i]);
+                }
+                res = Math.Max(res, max);
+            }
+            return res;
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        public string ReformatNumber(string number)
+        {
+            string tmp = "";
+            for (int i = 0; i < number.Length; i++)
+            {
+                if (char.IsDigit(number[i]))
+                {
+                    tmp += number[i];
+                }
+            }
+            int flag = 0;
+            string res = "";
+            int target = 3;
+            int ff = 0;
+            if (tmp.Length % 3 == 1 && tmp.Length > 6)
+            {
+                ff = tmp.Length - 4;
+            }
+            if (tmp.Length == 4)
+            {
+                target = 2;
+            }
+            for (int i = 0; i < tmp.Length; i++)
+            {
+                if (ff != 0)
+                {
+                    if (ff == i)
+                    {
+                        target = 2;
+                        flag = 2;
+                    }
+                }
+                if (flag == target)
+                {
+                    res += '-';
+                    flag = 0;
+                }
+                res += tmp[i];
+                flag++;
+            }
+            return res;
+        }
+
+
+
+        /// <summary>
+        /// 316. 去除重复字母
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public string RemoveDuplicateLetters(string s)
+        {
+            Stack<char> stack = new Stack<char>();
+            for (int i = 0; i < s.Length; i++)
+            {
+                char c = s[i];
+                if (stack.Contains(c)) continue;
+                while (stack.Any() && stack.Peek() > c && s.IndexOf(stack.Peek(), i) != -1)
+                {
+                    stack.Pop();
+                }
+                stack.Push(c);
+            }
+            char[] chars = new char[stack.Count];
+            int idx = 0;
+            while (stack.Any())
+            {
+                chars[idx++] = stack.Pop();
+            }
+            Array.Reverse(chars);
+            return new string(chars);
+        }
+
         /// <summary>
         /// 389. 找不同
         /// </summary>
@@ -38,6 +1059,54 @@ namespace Leetcode
         }
 
 
+        /// <summary>
+        /// 188. 买卖股票的最佳时机 IV
+        /// </summary>
+        /// <param name="k"></param>
+        /// <param name="prices"></param>
+        /// <returns></returns>
+        public int MaxProfitIV(int k, int[] prices)
+        {
+            /**
+            当k大于等于数组长度一半时, 问题退化为贪心问题此时采用 买卖股票的最佳时机 II
+            的贪心方法解决可以大幅提升时间性能, 对于其他的k, 可以采用 买卖股票的最佳时机 III
+            的方法来解决, 在III中定义了两次买入和卖出时最大收益的变量, 在这里就是k租这样的
+            变量, 即问题IV是对问题III的推广, t[i][0]和t[i][1]分别表示第i比交易买入和卖出时
+            各自的最大收益
+            **/
+            if (k < 1) return 0;
+            if (k >= prices.Length / 2) return Greedy(prices);
+            int[,] t = new int[k, 2];
+            for (int i = 0; i < k; i++)
+            {
+                t[i, 0] = int.MinValue;
+            }
+            foreach (var p in prices)
+            {
+                t[0, 0] = Math.Max(t[0, 0], -p);
+                t[0, 1] = Math.Max(t[0, 1], t[0, 0] + p);
+                for (int i = 1; i < k; i++)
+                {
+                    t[i, 0] = Math.Max(t[i, 0], t[i - 1, 1] - p);
+                    t[i, 1] = Math.Max(t[i, 1], t[i, 0] + p);
+                }
+            }
+            return t[k - 1, 1];
+
+            int Greedy(int[] prices)
+            {
+                int max = 0;
+                for (int i = 1; i < prices.Length; i++)
+                {
+                    if (prices[i] > prices[i - 1])
+                    {
+                        max += prices[i] - prices[i - 1];
+                    }
+                }
+                return max;
+            }
+        }
+
 
         /// <summary>
         /// 123. 买卖股票的最佳时机 III
@@ -46,7 +1115,16 @@ namespace Leetcode
         /// <returns></returns>
         public int MaxProfitIII(int[] prices)
         {
-            return 0;
+            int fstBuy = int.MinValue, fstSell = 0;
+            int secBuy = int.MinValue, secSell = 0;
+            for (int i = 0; i < prices.Length; i++)
+            {
+                fstBuy = Math.Max(fstBuy, -prices[i]);
+                fstSell = Math.Max(fstSell, fstBuy + prices[i]);
+                secBuy = Math.Max(secBuy, fstSell - prices[i]);
+                secSell = Math.Max(secSell, secBuy + prices[i]);
+            }
+            return secSell;
         }
 
 
@@ -1580,6 +2658,7 @@ namespace Leetcode
         public void Rotate(int[] nums, int k)
         {
             k %= nums.Length;
+            // 这个没错，但是会超时（超时也是错，菜是原罪）
             // for (int i = 0; i < k; i++)
             // {
             //     var temp = nums[nums.Length - 1];
@@ -2807,8 +3886,6 @@ namespace Leetcode
             }
             Console.WriteLine(result);
         }
-
-
 
     }
 }
