@@ -8,6 +8,284 @@ namespace Leetcode
     public class Source
     {
         /// <summary>
+        /// 1232. 缀点成线
+        /// Easy
+        /// </summary>
+        /// <param name="coordinates"></param>
+        /// <returns></returns>
+        public bool CheckStraightLine(int[][] coordinates)
+        {
+            for (int i = 2; i < coordinates.Length; i++)
+            {
+                if ((coordinates[1][1] - coordinates[0][1]) * (coordinates[i][0] - coordinates[0][0])
+                    != (coordinates[i][1] - coordinates[0][1]) * (coordinates[1][0] - coordinates[0][0]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        #region 第 224 场周赛
+        public int TupleSameProduct2(int[] nums)
+        {
+            int len = nums.Length;
+            int count = 0;
+            Dictionary<int, int> dict = new Dictionary<int, int>();
+            for (int i = 0; i < len; i++)
+            {
+                for (int j = i + 1; j < len; j++)
+                {
+                    var tmp = nums[i] * nums[j];
+                    if (dict.ContainsKey(tmp))
+                    {
+                        dict[tmp]++;
+                    }
+                    else
+                    {
+                        dict.Add(tmp, 1);
+                    }
+                }
+            }
+            foreach (var item in dict)
+            {
+                if (item.Value > 1)
+                {
+                    count += item.Value * (item.Value - 1) / 2 * 8;
+                }
+            }
+            return count;
+        }
+
+
+        /// <summary>
+        /// 5243. 同积元组
+        /// Medium
+        /// </summary>
+        /// <param name="nums"></param>
+        /// <returns></returns>
+        public int TupleSameProduct(int[] nums)
+        {
+            Array.Sort(nums);
+            int n = nums.Length;
+            int count = 0;
+            foreach (var a in nums)
+            {
+                foreach (var b in nums)
+                {
+                    if (b == a)
+                    {
+                        continue;
+                    }
+                    foreach (var c in nums)
+                    {
+                        if (c == b || c == a)
+                        {
+                            continue;
+                        }
+                        foreach (var d in nums)
+                        {
+                            if (d == c || d == b || d == a)
+                            {
+                                continue;
+                            }
+                            if (a * b == c * d)
+                            {
+                                count++;
+                            }
+                        }
+                    }
+                }
+            }
+            return count;
+
+            // bool Target(int[] nums)
+            // {
+            //     if (nums == null) return false;
+            //     if (nums.Length < 4 || nums.Length > 4) return false;
+            //     return nums[0] * nums[1] == nums[2] * nums[3];
+            // }
+        }
+
+
+
+
+        /// <summary>
+        /// 5653. 可以形成最大正方形的矩形数目
+        /// Easy
+        /// </summary>
+        /// <param name="rectangles"></param>
+        /// <returns></returns>
+        public int CountGoodRectangles(int[][] rectangles)
+        {
+            if (rectangles.Length == 0) return 0;
+            if (rectangles.Length == 1) return 1;
+            Dictionary<int, int> dict = new Dictionary<int, int>();
+            for (int i = 0; i < rectangles.Length; i++)
+            {
+                int tmp = Math.Min(rectangles[i][0], rectangles[i][1]);
+                if (dict.ContainsKey(tmp))
+                {
+                    dict[tmp]++;
+                }
+                else
+                {
+                    dict.Add(tmp, 1);
+                }
+            }
+            int res = 0;
+            foreach (var item in dict)
+            {
+                res = Math.Max(res, item.Key);
+            }
+            return dict[res];
+        }
+
+
+
+        #endregion
+
+
+        #region 第 223 场周赛
+        /// <summary>
+        /// 5639. 完成所有工作的最短时间
+        /// Hard
+        /// </summary>
+        /// <param name="jobs"></param>
+        /// <param name="k"></param>
+        /// <returns></returns>
+        public int MinimumTimeRequired(int[] jobs, int k)
+        {
+            int[,] dp = new int[13, 1 << 12];
+            int[] sum = new int[1 << 12], Log = new int[1 << 12];
+
+            int n = jobs.Length;
+            for (int i = 2; i < (1 << n); i += 1) Log[i] = Log[i >> 1] + 1;
+            for (int i = 1; i < (1 << n); i += 1)
+                sum[i] = sum[i - (i & -i)] + jobs[Log[i & -i]];
+            for (int i = 0; i <= k; i += 1)
+                for (int j = 1; j < (1 << n); j += 1) dp[i, j] = 1000000000;
+            for (int i = 1; i <= k; i += 1)
+                for (int j = 1; j < (1 << n); j += 1)
+                {
+                    for (int x = j; x == 1; x = (x - 1) & j)
+                        dp[i, j] = Math.Min(Math.Max(dp[i - 1, j ^ x], sum[x]), dp[i, j]);
+                }
+            return dp[k, (1 << n) - 1];
+        }
+
+
+        /// <summary>
+        /// 5650. 执行交换操作后的最小汉明距离
+        /// Medium
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="target"></param>
+        /// <param name="allowedSwaps"></param>
+        /// <returns></returns>
+        public int MinimumHammingDistance(int[] source, int[] target, int[][] allowedSwaps)
+        {
+            int res = 0;
+
+
+
+            return res;
+        }
+
+
+        /// <summary>
+        /// 5652. 交换链表中的节点
+        /// Medium
+        /// </summary>
+        /// <param name="head"></param>
+        /// <param name="k"></param>
+        /// <returns></returns>
+        public ListNode SwapNodes(ListNode head, int k)
+        {
+            List<int> list = new List<int>();
+            while (head != null)
+            {
+                list.Add(head.val);
+                head = head.next;
+            }
+            int tmp = 0;
+            tmp = list[k - 1];
+            list[k - 1] = list[list.Count - k];
+            list[list.Count - k] = tmp;
+
+            ListNode dummyHead = new ListNode(-1);
+            ListNode preNode = dummyHead;
+            for (int i = 0; i < list.Count; i++)
+            {
+                ListNode curNode = new ListNode(list[i]);
+                preNode.next = curNode;
+                preNode = preNode.next;
+            }
+            return dummyHead.next;
+        }
+
+
+
+        /// <summary>
+        /// 5652. 交换链表中的节点
+        /// Medium
+        /// </summary>
+        /// <param name="head"></param>
+        /// <param name="k"></param>
+        /// <returns></returns>
+        public ListNode SwapNodes1(ListNode head, int k)
+        {
+            if (head == null || head.next == null) return head;
+            ListNode newHead = new ListNode(-1);
+            newHead.next = head;
+            ListNode fast = head;
+            ListNode slow = head;
+            for (int i = 0; i < k - 1; i++)
+            {
+                fast = fast.next;
+            }
+            ListNode l = fast;
+            fast = fast.next;
+            while (fast.next != null)
+            {
+                fast = fast.next;
+                slow = slow.next;
+            }
+            ListNode r = slow;
+            Swap(l, r);
+            return newHead.next;
+
+            void Swap(ListNode l1, ListNode l2)
+            {
+                int tmp = l1.val;
+                l1.val = l2.val;
+                l2.val = tmp;
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// 5649. 解码异或后的数组
+        /// </summary>
+        /// <param name="encoded"></param>
+        /// <param name="first"></param>
+        /// <returns></returns>
+        public int[] Decode(int[] encoded, int first)
+        {
+            int[] res = new int[encoded.Length + 1];
+            res[0] = first;
+            for (int i = 0; i < encoded.Length; i++)
+            {
+                res[i + 1] = encoded[i] ^ res[i];
+            }
+            return res;
+        }
+        #endregion
+
+        /// <summary>
         /// 39. 组合总和
         /// Medium
         /// </summary>
